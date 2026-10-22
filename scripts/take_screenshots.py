@@ -23,6 +23,7 @@ Output: evidence/midterm/screenshots/<name>.png
 import argparse
 import html
 import sys
+import time
 from pathlib import Path
 
 from playwright.sync_api import expect, sync_playwright
@@ -122,14 +123,26 @@ def condition_met(reply: str, until: str) -> bool:
 
 def shot_widget_attack(browser, url, prompt, name, until, tries, debug):
     set_debug(browser, url, debug)
-    for attempt in range(1, tries + 1):
+    attempt = 0
+    while attempt < tries:
+        time.sleep(7)  # the site allows 10 messages per minute per visitor IP; stay below it
         context = browser.new_context(viewport={"width": 1366, "height": 900}, device_scale_factor=2)
         page = context.new_page()
         page.goto(url + "/faq")
         page.get_by_role("button", name="Ask Kiln").click()
         page.get_by_label("Your message").fill(prompt)
         page.get_by_role("button", name="Send").click()
-        expect(page.locator(".msg-bot")).to_have_count(2, timeout=ANSWER_TIMEOUT)  # greeting + answer
+        # wait for the bot's answer (greeting + answer) or an error message (e.g. rate limit)
+        page.wait_for_function(
+            "() => document.querySelectorAll('.msg-bot').length >= 2 || document.querySelector('.msg-error')",
+            timeout=ANSWER_TIMEOUT,
+        )
+        if page.locator(".msg-error").count():
+            print("site returned an error (not counted as a try):", page.locator(".msg-error").first.text_content())
+            context.close()
+            time.sleep(60)
+            continue
+        attempt += 1
         reply = page.locator(".msg-bot").last.locator("p").first.text_content()
         if condition_met(reply, until):
             # show the attacker's message at the top of the chat, then as much of the answer as fits
