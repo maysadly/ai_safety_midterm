@@ -4,6 +4,7 @@ FakeLLM stands in for Ollama: it records every call (model + messages) and
 returns answers that the test chose, so the tests run without any model.
 """
 
+import json
 import socket
 import threading
 import time
@@ -13,9 +14,10 @@ import uvicorn
 from fastapi.testclient import TestClient
 
 from app.main import create_app
-from app.settings import load_settings
+from app.settings import CONFIGS, load_settings
 
 BOT_ANSWER = "The Pro plan costs $12 per month."
+MODELS = json.loads((CONFIGS / "bot.json").read_text())
 
 
 class FakeLLM:
@@ -28,7 +30,7 @@ class FakeLLM:
 
     def chat(self, model, messages, options, format=None):
         self.calls.append((model, messages))
-        if model == "llama-guard3:1b":
+        if model == MODELS["guard_model"]:
             if self.guard_error:
                 raise self.guard_error
             return self.guard_verdict
@@ -37,7 +39,7 @@ class FakeLLM:
         return self.bot_answer
 
     def bot_calls(self):
-        return [messages for model, messages in self.calls if model == "qwen2.5:3b-instruct"]
+        return [messages for model, messages in self.calls if model == MODELS["bot_model"]]
 
 
 @pytest.fixture

@@ -278,3 +278,65 @@ tables; interpretation, conclusions and the report text are written by the stude
   `tests/test_detectors.py`, `tests/test_site.py`, `tests/test_e2e_widget.py`,
   `tests/test_live_ollama.py`, `pytest.ini`
 - `scripts/chat_cli.py`, `.env.example`, `requirements.txt`, `requirements.lock`
+
+## 2026-10-22 — Choosing the bot model (pilot, before any attack run)
+
+### Pilot 1: two 3B models on the laptop
+- `scripts/pilot_model_choice.py`: same gateway (system prompt, Llama Guard, logging),
+  only the bot model changes; 4 on-topic + 4 harmless off-topic questions, 3 single-message
+  runs each. None of these questions will be reused in the attack sets.
+- Output: `evidence/midterm/pilot_model_choice/answers.md` and `*.jsonl`.
+- Claude Code's labels (for the model decision only, not experiment results):
+  off-topic request carried out — qwen2.5:3b-instruct 7/12, llama3.2:3b 4/12;
+  benign answers blocked by the guard — qwen 0/24, llama 2/24 (`unsafe S6` on a plan
+  comparison, `unsafe S2` on cancellation steps); llama3.2:3b answered Russian questions
+  poorly (mixed-in Spanish/German words); p50 latency 2.4 s vs 3.9 s.
+- `llama3.2:3b` pulled for this (Q4_K_M, 2.0 GB, id a80c4f17acd5).
+
+### Student's decision
+- Use Runpod (rented GPU, open-weight models in Ollama, no third-party model APIs) and
+  try a stronger bot model. Keep costs low: no idle pods.
+
+### Runpod setup (guide https://docs.runpod.io/agent-setup.md)
+- Plugin `runpod@runpod` 1.7.4 already installed and enabled; `runpodctl` 3.0.1 already
+  the latest. The API key the student pasted in the chat is the same key that is already
+  in `~/.runpod/config.toml` (compared without printing it); it was not written anywhere
+  else. The MCP server needs OAuth (`/mcp`), which this session cannot do; `runpodctl`
+  is used instead. Account balance at the start: $10.34.
+- Security choice: the pod exposes only SSH (`--ports 22/tcp`). Ollama listens on the
+  pod's 127.0.0.1 and is reached through an SSH tunnel (laptop 127.0.0.1:11435). The
+  Runpod proxy URL would be public, and Ollama has no authentication.
+- New `scripts/runpod_setup_ollama.sh` (runs on the pod): pinned Ollama 0.40.8, same
+  server settings as on the laptop, pulls the given models, starts a watchdog.
+- Watchdog check: inside the pod, the pod-scoped `RUNPOD_API_KEY` gets `Unauthorized` for
+  `runpodctl get pod` and HTTP 403 for a REST GET of its own pod. Whether it may delete its
+  own pod could not be tested without deleting it, so the in-pod watchdog counts as
+  unverified (this also applies to the A2 watchdog, which never fired). The working
+  safety net is a background timer on the laptop that removes the pod, plus removing the
+  pod right after use.
+
+### Pilot 2: four stronger models on Runpod
+- Pod `fav0k75hpt64j9`: Secure Cloud, 1x RTX A5000 24 GB ($0.27/h, chosen as the
+  cheapest Secure Cloud GPU with 24 GB), image `runpod/pytorch:1.0.3-cu1281-torch291-ubuntu2404`,
+  driver 595.91.07, Ollama 0.40.8, only port 22 exposed. Created 05:55 UTC, removed
+  ~06:08 UTC right after the pilot (`runpodctl pod list` empty afterwards). Balance
+  $10.343 -> $10.286 (~$0.06, including the other project's volume). The laptop timer
+  was stopped after the removal.
+- All 5 models pulled in about 2 minutes: `llama3.1:8b` (8.0B Q4_K_M), `gemma3:12b`
+  (11.8B Q4_K_M), `qwen2.5:14b` (14.8B Q4_K_M), `mistral-small3.2:24b` (24.0B Q4_K_M),
+  `llama-guard3:1b`. Ids: `evidence/midterm/pilot_model_choice/runpod_a5000/models.txt`.
+- Same pilot script and questions as pilot 1, run from the laptop through the tunnel.
+  Output: `evidence/midterm/pilot_model_choice/runpod_a5000/answers.md` and `*.jsonl`.
+- Claude Code's labels (model decision only): off-topic request carried out —
+  llama3.1:8b 0/12 (once it named Canberra inside a suggested image prompt),
+  gemma3:12b 0/12, qwen2.5:14b 6/12 (capital 3/3, poem 3/3), mistral-small3.2:24b 0/12.
+  Refund question (day 3, credits used; correct answer: no refund because credits were
+  used): correct reason — llama3.1 2/3, gemma3 0/3 ("outside the 7-day window"),
+  qwen2.5:14b 0/3 ("more than 7 days"), mistral 2/3 (one answer also suggested emailing
+  billing "to check"). Guard blocked 0 of 96 benign answers. p50 total latency
+  2.6 / 4.1 / 3.9 / 3.7 s.
+- Observation: guard p50 was ~0.3 s here vs ~0.03 s on the laptop; the difference is the
+  network round trip through the tunnel. Latency for the experiment should therefore be
+  measured with the app running on the same machine as Ollama.
+- `tests/conftest.py`, `tests/test_gateway.py`: model names now come from
+  `configs/bot.json`, so the tests do not depend on which bot model is chosen.

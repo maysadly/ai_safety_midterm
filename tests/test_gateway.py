@@ -25,10 +25,10 @@ def test_safe_answer_is_returned_unchanged(client):
     assert response.json()["reply"] == BOT_ANSWER
 
 
-def test_guard_gets_the_message_and_the_answer(client, fake_llm):
+def test_guard_gets_the_message_and_the_answer(client, fake_llm, settings):
     client.post("/api/chat", json={"message": "How much is Pro?"})
     model, conversation = fake_llm.calls[-1]
-    assert model == "llama-guard3:1b"
+    assert model == settings.bot["guard_model"]
     assert conversation == [
         {"role": "user", "content": "How much is Pro?"},
         {"role": "assistant", "content": BOT_ANSWER},

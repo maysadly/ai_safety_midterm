@@ -1,0 +1,6 @@
+# Models on the pilot pod fav0k75hpt64j9 (RTX A5000 24 GB, Ollama 0.40.8), 2026-10-22T06:07:43Z
+mistral-small3.2:24b	mistral3	24.0B	Q4_K_M	digest 5a408ab55df5	15.1 GB
+qwen2.5:14b	qwen2	14.8B	Q4_K_M	digest 7cdf5a0187d5	8.9 GB
+gemma3:12b	gemma3	11.8B	Q4_K_M	digest b92b218582c5	8.1 GB
+llama3.1:8b	llama	8.0B	Q4_K_M	digest 46e0c10c039e	4.9 GB
+llama-guard3:1b	llama	1.5B	Q8_0	digest 494147e06bf9	1.6 GB
