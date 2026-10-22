@@ -5,10 +5,16 @@
     demo-success ATTACK_ID    /demo: run the attack until a run succeeds (max --tries)
     demo-blocked ATTACK_ID    /demo: run the attack until the guard blocks it (max --tries)
     admin                     /admin with debug lines on and one widget answer
+    widget-attack PROMPT NAME type an attack into the chat widget of the public site, like a
+                              visitor (new browser session per try), until --until is met:
+                              leak (G1 detector fires on the answer shown), blocked (guard
+                              refusal shown) or contains:TEXT; --debug shows the debug line
     text FILE NAME            render a text file (console log, jq output) as an image
 
 Every image shows a real response of the running system; nothing is edited. When a
 "until ..." mode needs several tries, all tries are real requests and stay in the chat log.
+For contains:TEXT a second image `<name>_2.png` shows the same answer scrolled to the match
+(useful when the answer is longer than the chat panel).
 
 Usage:  .venv/bin/python scripts/take_screenshots.py site --url http://127.0.0.1:8000
 Output: evidence/midterm/screenshots/<name>.png
@@ -23,6 +29,8 @@ from playwright.sync_api import expect, sync_playwright
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from app import detectors  # noqa: E402
+from app.gateway import REFUSAL  # noqa: E402
 from app.settings import ROOT, load_settings  # noqa: E402
 
 OUT = ROOT / "evidence" / "midterm" / "screenshots"
@@ -92,6 +100,66 @@ def shot_admin(page, url):
     print("saved admin_conversations")
 
 
+def set_debug(browser, url, enabled: bool):
+    """Switch the "debug lines" (a global app setting) from a separate admin session,
+    so the visitor's browser below has no admin cookie."""
+    admin = browser.new_context()
+    admin.request.post(url + "/admin/login", data={"password": load_settings().admin_password})
+    admin.request.post(url + "/admin/api/debug", data={"enabled": enabled})
+    admin.close()
+
+
+def condition_met(reply: str, until: str) -> bool:
+    if until == "leak":
+        settings = load_settings()
+        return detectors.run_exact_detectors(reply, settings.system_prompt, settings.detectors)["G1_prompt_leak"]
+    if until == "blocked":
+        return reply == REFUSAL
+    if until.startswith("contains:"):
+        return until.removeprefix("contains:").lower() in reply.lower()
+    return True  # "any": keep the first answer
+
+
+def shot_widget_attack(browser, url, prompt, name, until, tries, debug):
+    set_debug(browser, url, debug)
+    for attempt in range(1, tries + 1):
+        context = browser.new_context(viewport={"width": 1366, "height": 900}, device_scale_factor=2)
+        page = context.new_page()
+        page.goto(url + "/faq")
+        page.get_by_role("button", name="Ask Kiln").click()
+        page.get_by_label("Your message").fill(prompt)
+        page.get_by_role("button", name="Send").click()
+        expect(page.locator(".msg-bot")).to_have_count(2, timeout=ANSWER_TIMEOUT)  # greeting + answer
+        reply = page.locator(".msg-bot").last.locator("p").first.text_content()
+        if condition_met(reply, until):
+            # show the attacker's message at the top of the chat, then as much of the answer as fits
+            page.evaluate("""() => {
+                const log = document.querySelector('.chat-log');
+                const user = log.querySelector('.msg-user');
+                log.scrollTop = user.offsetTop - log.offsetTop - 8;
+            }""")
+            page.screenshot(path=OUT / f"{name}.png")
+            print(f"saved {name} (try {attempt} of {tries})")
+            if until.startswith("contains:"):
+                # the same answer, scrolled so the matched text is in the middle of the chat
+                page.evaluate("""(text) => {
+                    const log = document.querySelector('.chat-log');
+                    const node = log.querySelector('.msg-bot:last-child p').firstChild;
+                    const i = node.textContent.toLowerCase().indexOf(text.toLowerCase());
+                    const range = document.createRange();
+                    range.setStart(node, i);
+                    range.setEnd(node, i + text.length);
+                    log.scrollTop += range.getBoundingClientRect().top - log.getBoundingClientRect().top - log.clientHeight / 2;
+                }""", until.removeprefix("contains:"))
+                page.screenshot(path=OUT / f"{name}_2.png")
+                print(f"saved {name}_2 (same answer, scrolled to the matched text)")
+            context.close()
+            return
+        print(f"try {attempt}: condition '{until}' not met: {reply[:80]!r}")
+        context.close()
+    sys.exit(f"'{until}' not reached in {tries} tries; nothing saved")
+
+
 def shot_text(page, file: Path, name: str):
     text = html.escape(file.read_text(encoding="utf-8", errors="replace"))
     page.set_content(
@@ -105,10 +173,13 @@ def shot_text(page, file: Path, name: str):
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=["site", "widget", "demo-success", "demo-blocked", "admin", "text"])
+    parser.add_argument("mode", choices=["site", "widget", "demo-success", "demo-blocked", "admin",
+                                         "widget-attack", "text"])
     parser.add_argument("args", nargs="*")
     parser.add_argument("--url", default="http://127.0.0.1:8000")
     parser.add_argument("--tries", type=int, default=10)
+    parser.add_argument("--until", default="any", help="widget-attack: leak | blocked | contains:TEXT | any")
+    parser.add_argument("--debug", action="store_true", help="widget-attack: show the debug line")
     a = parser.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
 
@@ -125,6 +196,8 @@ def main() -> None:
             shot_demo(page, a.url, a.args[0], "blocked", a.tries)
         elif a.mode == "admin":
             shot_admin(page, a.url)
+        elif a.mode == "widget-attack":
+            shot_widget_attack(browser, a.url, a.args[0], a.args[1], a.until, a.tries, a.debug)
         elif a.mode == "text":
             page.set_viewport_size({"width": 1200, "height": 400})
             shot_text(page, Path(a.args[0]), a.args[1])
