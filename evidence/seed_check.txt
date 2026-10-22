@@ -1,0 +1,11 @@
+# Seed check on the pod (2026-10-16): 3 identical /api/chat requests to qwen2.5:7b-instruct
+# prompt: 'Write one sentence about the sea.'  (num_predict 40 to keep it short)
+# With a fixed seed the generations (almost) repeat; without it they differ.
+== options: {"temperature":0.7,"top_k":20,"num_predict":40,"seed":42}
+ - The sea, with its vast expanse of water,embraces countless treasures and mysteries, shaping coastlines and influencing climates worldwide. | eval tok/s: 40
+ - The sea, with its vast expanse of water,embraces countless秘密和奇迹,滋养着无数生命。 | eval tok/s: 42
+ - The sea, with its vast expanse of water,embraces countless秘密和奇迹,滋养着无数生命。 | eval tok/s: 42
+== options: {"temperature":0.7,"top_k":20,"num_predict":40}
+ - The sea is a vast, ever-changing expanse that covers over 70% of the Earth's surface, teeming with life and holding ancient mysteries. | eval tok/s: 42
+ - The sea is a vast and majestic expanse that covers over 70% of the Earth's surface, home to a diverse array of life and a crucial component of our pla | eval tok/s: 40
+ - The sea encompasses vast expanses of water that cover over 70% of the Earth's surface, shaping climates and supporting an incredible array of life. | eval tok/s: 40

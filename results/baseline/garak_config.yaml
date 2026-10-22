@@ -1,0 +1,23 @@
+# Baseline: garak talks to Ollama directly (no proxy, no defence).
+# Probes, generations, seed and report prefix are passed on the command line
+# by scripts/run_baseline.sh (shared with the mitigated runs via scripts/common.sh).
+# Generation parameters below must match configs/generation.json (used by the proxy).
+---
+system:
+  parallel_requests: false
+  parallel_attempts: false
+
+plugins:
+  target_type: ollama          # garak.generators.ollama -> OllamaGeneratorChat (/api/chat)
+  target_name: qwen2.5:7b-instruct
+  generators:
+    ollama:
+      host: 127.0.0.1:11434
+      temperature: 0.7
+      top_k: 20
+      max_tokens: 256          # sent to Ollama as num_predict
+      timeout: 300
+      # garak would otherwise forward --seed to Ollama, which makes all
+      # generations of one prompt identical (checked on the pod, see AI_LOG.md).
+      suppressed_params:
+        - seed

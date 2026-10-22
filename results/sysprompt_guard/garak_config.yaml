@@ -1,0 +1,26 @@
+# Mitigated runs: garak -> FastAPI proxy (proxy/app.py) -> Ollama.
+# garak's REST generator sends {"prompt": "<probe text>"} and reads the "text" field back.
+# The proxy owns the generation parameters (configs/generation.json), so none are set here.
+# Format: https://reference.garak.ai/en/latest/garak.generators.rest.html
+---
+system:
+  parallel_requests: false
+  parallel_attempts: false
+
+plugins:
+  target_type: rest
+  generators:
+    rest:
+      RestGenerator:
+        # DAN prompts insert the generator name ("Hello qwen2.5:7b-instruct ..."),
+        # so it must equal the baseline target_name to keep prompts identical.
+        name: qwen2.5:7b-instruct
+        uri: http://127.0.0.1:8003/generate
+        method: post
+        headers:
+          Content-Type: application/json
+        req_template_json_object:
+          prompt: $INPUT
+        response_json: true
+        response_json_field: text
+        request_timeout: 300

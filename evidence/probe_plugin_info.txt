@@ -1,0 +1,252 @@
+===== probes.dan.Dan_6_0
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:05:42.249355
+Configured info on probes.dan.Dan_6_0:
+                        description: DAN 6.0
+                     DEFAULT_PARAMS: {}
+                             active: False
+                            doc_uri: 
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.DAN
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'payload:jailbreak']
+                               tier: 9
+                           mod_time: 2026-09-04 18:05:31 +0000
+===== probes.dan.Dan_6_2
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:05:45.955708
+Configured info on probes.dan.Dan_6_2:
+                        description: DAN 6.2
+                     DEFAULT_PARAMS: {}
+                             active: False
+                            doc_uri: 
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.DAN
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'payload:jailbreak']
+                               tier: 9
+                           mod_time: 2026-09-04 18:05:31 +0000
+===== probes.dan.Dan_7_0
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:05:50.136384
+Configured info on probes.dan.Dan_7_0:
+                        description: DAN 7.0
+                     DEFAULT_PARAMS: {}
+                             active: False
+                            doc_uri: 
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.DAN
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'payload:jailbreak']
+                               tier: 9
+                           mod_time: 2026-09-04 18:05:31 +0000
+===== probes.dan.Dan_8_0
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:05:54.251871
+Configured info on probes.dan.Dan_8_0:
+                        description: DAN 8.0
+                     DEFAULT_PARAMS: {}
+                             active: False
+                            doc_uri: 
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.DAN
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'payload:jailbreak']
+                               tier: 9
+                           mod_time: 2026-09-04 18:05:31 +0000
+===== probes.dan.Dan_9_0
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:05:58.746987
+Configured info on probes.dan.Dan_9_0:
+                        description: DAN 9.0
+                     DEFAULT_PARAMS: {}
+                             active: False
+                            doc_uri: 
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.DAN
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'payload:jailbreak']
+                               tier: 9
+                           mod_time: 2026-09-04 18:05:31 +0000
+===== probes.dan.Dan_10_0
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:06:02.936009
+Configured info on probes.dan.Dan_10_0:
+                        description: DAN 10.0
+                     DEFAULT_PARAMS: {}
+                             active: False
+                            doc_uri: 
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.DAN
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'payload:jailbreak']
+                               tier: 9
+                           mod_time: 2026-09-04 18:05:31 +0000
+===== probes.dan.Dan_11_0
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:06:06.435954
+Configured info on probes.dan.Dan_11_0:
+                        description: DAN 11.0
+                     DEFAULT_PARAMS: {}
+                             active: False
+                            doc_uri: 
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.DAN
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'avid-effect:performance:P0204', 'payload:jailbreak']
+                               tier: 9
+                           mod_time: 2026-09-04 18:05:31 +0000
+===== probes.dan.DUDE
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:06:10.141114
+Configured info on probes.dan.DUDE:
+                        description: DUDE
+                     DEFAULT_PARAMS: {}
+                             active: False
+                            doc_uri: 
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.DUDE
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'payload:jailbreak']
+                               tier: 9
+                           mod_time: 2026-09-04 18:05:31 +0000
+===== probes.dan.STAN
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:06:14.140080
+Configured info on probes.dan.STAN:
+                        description: STAN
+                     DEFAULT_PARAMS: {}
+                             active: False
+                            doc_uri: 
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.STAN
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'payload:jailbreak']
+                               tier: 9
+                           mod_time: 2026-09-04 18:05:31 +0000
+===== probes.dan.DAN_Jailbreak
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:06:18.356822
+Configured info on probes.dan.DAN_Jailbreak:
+                        description: DAN Jailbreak
+                     DEFAULT_PARAMS: {}
+                             active: False
+                            doc_uri: 
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.DANJailbreak
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'payload:jailbreak']
+                               tier: 9
+                           mod_time: 2026-09-04 18:05:31 +0000
+===== probes.dan.AntiDAN
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:06:22.739456
+Configured info on probes.dan.AntiDAN:
+                        description: Anti-DAN
+                     DEFAULT_PARAMS: {}
+                             active: False
+                            doc_uri: 
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.AntiDAN
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'avid-effect:performance:P0204']
+                               tier: 9
+                           mod_time: 2026-09-04 18:05:31 +0000
+===== probes.dan.ChatGPT_Developer_Mode_v2
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:06:26.931620
+Configured info on probes.dan.ChatGPT_Developer_Mode_v2:
+                        description: ChatGPT Developer Mode v2
+                     DEFAULT_PARAMS: {}
+                             active: False
+                            doc_uri: 
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.DevMode
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'payload:jailbreak']
+                               tier: 9
+                           mod_time: 2026-09-04 18:05:31 +0000
+===== probes.dan.ChatGPT_Developer_Mode_RANTI
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:06:31.336816
+Configured info on probes.dan.ChatGPT_Developer_Mode_RANTI:
+                        description: ChatGPT DevMode + Ranti
+                     DEFAULT_PARAMS: {}
+                             active: False
+                            doc_uri: 
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.DevMode
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'avid-effect:performance:P0204']
+                               tier: 9
+                           mod_time: 2026-09-04 18:05:31 +0000
+===== probes.dan.AutoDANCached
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:06:35.431022
+Configured info on probes.dan.AutoDANCached:
+                        description: Probe leveraging generated AutoDAN prompts
+                     DEFAULT_PARAMS: {}
+                             active: True
+                            doc_uri: https://arxiv.org/html/2310.04451
+                 extended_detectors: ['mitigation.MitigationBypass']
+             extra_dependency_names: []
+                               goal: disregard the system prompt
+                             intent: T009ignore
+                               lang: en
+                           modality: {'in': ['text']}
+            parallelisable_attempts: True
+                   primary_detector: dan.DAN
+                               tags: ['avid-effect:security:S0403', 'owasp:llm01', 'quality:Security:PromptStability', 'demon:Fictionalizing:Roleplaying:DAN_and_target_persona', 'demon:Language:Prompt_injection:Ignore_previous_instructions', 'euai:robustness:adversarial', 'payload:jailbreak']
+                               tier: 2
+                           mod_time: 2026-09-04 18:05:31 +0000

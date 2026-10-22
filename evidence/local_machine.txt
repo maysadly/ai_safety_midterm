@@ -1,0 +1,9 @@
+# Local machine (2026-10-16), where Claude Code runs; experiments run on a Runpod pod
+ProductName:		macOS
+ProductVersion:		26.0
+BuildVersion:		25A354
+arm64
+Apple M1 Pro
+RAM: 16 GB unified
+nvidia-smi: not available (Apple Silicon)
+Python 3.12.10

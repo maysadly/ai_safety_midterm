@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>502 | README | Runpod </title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        #content {
+            width: 80%;
+            max-width: 800px;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: #444;
+        }
+
+        a {
+            color: #1e90ff;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="content"></div>
+
+    <script>
+        // Instantiate Showdown
+        var converter = new showdown.Converter();
+
+        fetch('/README.md')
+            .then(response => response.text())
+            .then(text => {
+                // Convert markdown to HTML
+                var html = converter.makeHtml(text);
+
+                // Insert HTML into the page
+                document.getElementById('content').innerHTML = html;
+            });
+    </script>
+</body>
+
+</html>
+
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-16T17:14:16.641061
+✋ DEPRECATION: --probes on CLI is deprecated since version 0.15.1.pre1
+📜 logging to /root/.local/share/garak/garak.log
+🦜 loading [1m[95mgenerator[0m: REST: qwen2.5:7b-instruct
+📜 reporting to /root/.local/share/garak/garak_runs/none.report.jsonl
+🎯 loading intent service
+🎯 intents active: S003productkeys, S004, S004describe, S004erotica, S004flirt, S004graphic, S004lewd, S004pua, S004seduction, S005, S005bully, S005hate, S005profanity, S006threat, S008code, S008exec, S008inject, S008mal, S008phish, S008risky, S008spam, S008terminal, S009cred, S009exfil
+🕵️  queue of [1m[93mprobes:[0m dan.AntiDAN, dan.AutoDANCached, dan.ChatGPT_Developer_Mode_RANTI, dan.ChatGPT_Developer_Mode_v2, dan.DAN_Jailbreak, dan.DUDE, dan.Dan_10_0, dan.Dan_11_0, dan.Dan_6_0, dan.Dan_6_2, dan.Dan_7_0, dan.Dan_8_0, dan.Dan_9_0, dan.STAN, grandma.Slurs, grandma.Substances, grandma.Win10, grandma.Win11
+Preparing prompts:   0%|[38;2;0;243;180m          [0m| 0/1 [00:00<?, ?it/s]                                                          0%|          | 0/1 [00:00<?, ?it/s]probes.dan.AntiDAN:   0%|          | 0/1 [00:00<?, ?it/s]
+  0%|[38;2;192;97;203m          [0m| 0/5 [00:00<?, ?it/s][A
+REST qwen2.5:7b-instruct:   0%|[38;2;192;97;203m          [0m| 0/5 [00:00<?, ?it/s][A
+                                                               [A                                                         Traceback (most recent call last):
+  File "/root/assignment2-garak/.venv/bin/garak", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/root/assignment2-garak/.venv/lib/python3.12/site-packages/garak/__main__.py", line 10, in main
+    cli.main(sys.argv[1:])
+  File "/root/assignment2-garak/.venv/lib/python3.12/site-packages/garak/cli.py", line 764, in main
+    command.probewise_run(
+  File "/root/assignment2-garak/.venv/lib/python3.12/site-packages/garak/command.py", line 378, in probewise_run
+    probewise_h.run(generator, probe_names, evaluator, buffs)
+  File "/root/assignment2-garak/.venv/lib/python3.12/site-packages/garak/harnesses/probewise.py", line 110, in run
+    super().run(model, [probe], detectors, evaluator, announce_probe=False)
+  File "/root/assignment2-garak/.venv/lib/python3.12/site-packages/garak/harnesses/base.py", line 213, in run
+    attempt_results = probe.probe(model)
+                      ^^^^^^^^^^^^^^^^^^
+  File "/root/assignment2-garak/.venv/lib/python3.12/site-packages/garak/probes/dan.py", line 109, in probe
+    return garak.probes.Probe.probe(self, generator)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/assignment2-garak/.venv/lib/python3.12/site-packages/garak/probes/base.py", line 464, in probe
+    attempts_completed = self._execute_all(attempts_todo)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/assignment2-garak/.venv/lib/python3.12/site-packages/garak/probes/base.py", line 375, in _execute_all
+    result = self._execute_attempt(this_attempt)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/assignment2-garak/.venv/lib/python3.12/site-packages/garak/probes/base.py", line 312, in _execute_attempt
+    this_attempt.outputs = self.generator.generate(
+                           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/assignment2-garak/.venv/lib/python3.12/site-packages/garak/generators/base.py", line 226, in generate
+    output_one = self._call_model(
+                 ^^^^^^^^^^^^^^^^^
+  File "/root/assignment2-garak/.venv/lib/python3.12/site-packages/backoff/_sync.py", line 105, in retry
+    ret = target(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/assignment2-garak/.venv/lib/python3.12/site-packages/garak/generators/rest.py", line 372, in _call_model
+    raise ConnectionError(
+ConnectionError: REST URI client error: 405 - Not Allowed, uri: http://127.0.0.1:8001/generate
