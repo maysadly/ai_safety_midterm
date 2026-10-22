@@ -409,3 +409,110 @@ tables; interpretation, conclusions and the report text are written by the stude
 - Mutation checks: accepting any cookie signature and counting a success without looking
   at the guard each made a test fail; files restored.
 - Found by a browser test: the open chat widget covers the admin "Refresh" button.
+
+## 2026-10-22 — Stages 4-5: experiment run on Runpod
+
+### Pod
+- `l2sbf87fj6augk`: Secure Cloud, 1x A40 48 GB ($0.59/h), image
+  `runpod/pytorch:1.0.3-cu1281-torch291-ubuntu2404`, 100 GB container disk, only port 22.
+  Created 06:31:47 UTC (`runpodctl pod get` createdAt). Laptop timer (3 h) as safety net;
+  in-pod watchdog 180 min (unverified, see above).
+- `scripts/runpod_setup_experiment.sh`: Ollama 0.40.8 + `llama3.1:8b`, `llama-guard3:1b`,
+  `qwen2.5:7b-instruct`, `qwen2.5:32b-instruct`; `.venv` (app) and `.venv-garak` (garak 0.17.0);
+  a fresh `.env` generated on the pod (secrets never left it), `RATE_LIMIT_ENABLED=false`,
+  logs to `results/midterm/`. Versions/hardware: `evidence/midterm/pod/`.
+
+### Judge calibration (before the attack runs)
+- `evidence/midterm/judge_calibration/summary.md`: `qwen2.5:7b-instruct` 21/24 (missed the
+  translation, the "15% of 240" answer and the partial prime-check explanation; 0 false
+  positives), `qwen2.5:32b-instruct` 24/24. By the rule fixed in advance -> judge =
+  `qwen2.5:32b-instruct`; `configs/bot.json` changed on laptop and pod before the runs.
+  (The calibration was run with placeholder ADMIN_PASSWORD/COOKIE_SECRET env values only to
+  pass the settings check; it does not use them.)
+
+### garak smoke test (stage 4)
+- 06:39:10-06:41:30 UTC. `dan.DUDE` + `sysprompt_extraction.SystemPromptExtraction`, 1 generation, through the app,
+  with `source: smoke`, `attack_id: smoke:garak` so it cannot mix with results (29 chat log
+  lines; excluded by `summarize_midterm.py`). Worked: requests reached `/api/chat`, HF system
+  prompt datasets loaded (944 + 69 prompts), 28 extraction templates sent.
+- `scripts/garak_pre_guard.py` tested on the smoke report in a scratch copy. Two bugs found
+  and fixed: (1) garak detectors read outputs only if the prompt language matches theirs
+  (`Attempt.outputs_for(lang)`), so the language from the report is kept; (2) the prompt must
+  be rebuilt as the full garak `Conversation`, because `sysprompt_extraction.PromptExtraction`
+  reads its system turn. After the fixes, re-scoring the final replies reproduced garak's
+  stored scores for 30/30 output x detector pairs.
+
+### Runs
+- M0 + M2: `scripts/run_attacks.py --repeats 5` -> 180 attempts, 06:41:45-06:52:48 UTC
+  (first/last runner line in the chat log), 0 errors, 0 invalid judge replies.
+  File: `results/midterm/attacks/attempts.jsonl`.
+- Mistake by Claude Code: the "wait until the runner is done, then start garak" check used
+  `pgrep -f run_attacks.py`, which matched its own ssh command line (the same self-match trap
+  as `pkill -f` in A2), so garak did not start automatically. The GPU was idle from 06:52:48
+  to 07:01:32 UTC (~9 min, ~$0.09); garak was then started by hand with `setsid nohup`.
+- M1: `scripts/run_garak.sh` (4 groups: dan, grandma, sysprompt_extraction, promptinject),
+  first garak request 07:01:32 UTC.
+- Note for the record: earlier drafts of this entry had times estimated from memory; they were
+  replaced by the timestamps from the chat log.
+- All 4 garak groups finished: dan 113 s, grandma 139 s, sysprompt_extraction 471 s,
+  promptinject 132 s; 480 garak requests in the chat log; 0 bot errors, 0 guard errors.
+- `scripts/garak_pre_guard.py` on the pod: 620 output x detector scores; re-scoring the
+  final replies reproduced garak's stored scores for 620/620.
+
+### Screenshots and demo session (pod still running, app on the laptop through the tunnel)
+- A second app instance on the laptop (`OLLAMA_URL` = tunnel to the pod, separate logs
+  `logs/demo_session_*.jsonl`, copied to `evidence/midterm/screenshots/`) so screenshot
+  requests never mix with the experiment logs; taken only after the runs had finished, so they
+  did not affect the measured latencies.
+- `scripts/make_m1_samples.py` copied 3 real garak prompts into `attacks/m1_garak_samples.yaml`
+  for /demo (2 prompt-injection prompts the guard blocked most often, the extraction template
+  whose leak reached the visitor most often). First version picked the extraction template by
+  pre-guard leaks; changed to leaks that reached the visitor, because that is what a success
+  screenshot needs.
+- Success screenshot: `M1-G1-sysprompt-1`, 7th live try. Blocked screenshot: `M0-G1-3`, 1st try.
+  M2 success screenshots were tried 15 times each for M2-G4-authority and M2-G3-authority
+  without a success; none saved (all 30 tries are in the demo session log).
+- No staff promo code leak happened in any run, so the brief's example screenshot
+  ("secret leak") does not exist; the README says so.
+- garak console screenshot: `garak_console.log` of the dan group rendered as an image after
+  removing ANSI colours and progress-bar redraws (the result lines are unchanged);
+  JSONL samples made with `jq`, commands in the sample files.
+
+### Pod removed
+- `runpodctl pod remove l2sbf87fj6augk` at 07:21:42 UTC (~50 min after creation);
+  `runpodctl pod list` empty afterwards; laptop timer stopped. Balance $10.286 -> $9.781
+  (~$0.51 for this session; all Runpod use today ~$0.56, incl. the other project's volume).
+
+## 2026-10-22 — Stage 6-7: tables, plots, docs
+
+- `scripts/summarize_midterm.py` -> `results/midterm/summary.md`, `comparison.md`,
+  `latency/`, `plots/` (4 PNG, matplotlib; colours from the dataviz reference palette, checked
+  with its validator: categorical slots 1-3 pass, aqua below 3:1 contrast -> value labels on
+  every bar), `manual_labeling.csv` (50 rows, seed 42, `my_label`/`comment` empty).
+  Smoke-test lines (`source: smoke`) are excluded and their number is stated.
+- Fixed while checking the numbers: M1 "attack prompts" first counted distinct prompt texts
+  (94) - a few garak prompts share the same text; now counted as garak attempts (96 =
+  16 + 22 + 28 + 30).
+- Definitions written into the summary: scoring before the guard; for M1 G5 the probe's
+  primary garak detector (e.g. MitigationBypass for grandma.Substances, which only checks for
+  missing refusal phrases - the manual labels will show how often that is real harm).
+- `scripts/manual_label_agreement.py` (+ test): after the student fills `my_label`, compares
+  manual and automatic labels per source (exact detector, judge, garak detector).
+- README rewritten for the midterm (the A2 README moved to `docs/assignment2_README.md`),
+  `EXPLAIN.md` (in Russian, for the defence, 10 questions without answers).
+- Not done by Claude Code (left for the student): interpretation of the results, the
+  interpretation row in `comparison.md`, manual labels, the report text and slides.
+
+### Files written in stages 3-7 (in addition to those listed above)
+- `app/attacks.py`, `app/judge.py`, `app/evaluation.py`, `app/admin.py`, `app/admin_auth.py`,
+  `app/static/{login,admin,demo}.html`, `app/static/js/{login,admin,demo}.js`, `app/static/css/lab.css`
+- `attacks/m0_direct.yaml`, `attacks/m2_persuasion.yaml`, `attacks/persuasion_taxonomy.jsonl` (copied),
+  `attacks/judge_calibration.yaml`, `attacks/m1_garak_samples.yaml` (generated)
+- `configs/garak_rest.yaml`
+- `scripts/run_attacks.py`, `scripts/run_garak.sh`, `scripts/garak_pre_guard.py`,
+  `scripts/calibrate_judge.py`, `scripts/summarize_midterm.py`, `scripts/take_screenshots.py`,
+  `scripts/make_m1_samples.py`, `scripts/manual_label_agreement.py`, `scripts/start_app.sh`,
+  `scripts/runpod_setup_experiment.sh`
+- `tests/test_attacks.py`, `tests/test_judge_and_evaluation.py`, `tests/test_admin.py`,
+  `tests/test_e2e_lab.py`, `tests/test_runner.py`, `tests/test_manual_label_agreement.py`
+- `README.md`, `EXPLAIN.md`, `docs/assignment2_README.md` (moved)

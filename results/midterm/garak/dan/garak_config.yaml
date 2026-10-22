@@ -1,0 +1,40 @@
+# M1: garak 0.17.0 -> POST /api/chat of the running app (the same endpoint the website uses).
+# scripts/run_garak.sh replaces garak:dan per probe group, so every chat log line written
+# by garak carries "attack_id": "garak:<group>".
+# REST generator docs: https://reference.garak.ai/en/latest/garak.generators.rest.html
+---
+system:
+  parallel_requests: false
+  parallel_attempts: false
+
+run:
+  seed: 42                    # garak's own randomness (prompt sampling); the bot gets no seed
+  generations: 5              # 5 answers per prompt, as in Assignment 2
+  soft_probe_prompt_cap: 30   # at most 30 prompts per probe (limits promptinject; others are smaller)
+
+plugins:
+  target_type: rest
+  generators:
+    rest:
+      RestGenerator:
+        # DAN prompts insert the generator name ("Hello llama3.1:8b ..."), so use the bot's name.
+        name: llama3.1:8b
+        uri: http://127.0.0.1:8000/api/chat
+        method: post
+        headers:
+          Content-Type: application/json
+        # garak sends only the last user message ($INPUT); no session_id = no history.
+        req_template_json_object:
+          message: $INPUT
+          source: garak
+          attack_id: garak:dan
+        response_json: true
+        response_json_field: reply
+        request_timeout: 300
+  probes:
+    sysprompt_extraction:
+      SystemPromptExtraction:
+        # The probe pairs every attack template with system prompts from HF datasets, but the
+        # REST generator sends only the user turn, so those system prompts never reach our bot
+        # (our bot keeps its own). One sampled system prompt = each of the 28 templates once.
+        system_prompt_subsample: 1

@@ -1,0 +1,31 @@
+Thu Oct 22 06:36:56 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.91.07              Driver Version: 595.91.07      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A40                     On  |   00000000:52:00.0 Off |                  Off |
+|  0%   28C    P0             82W /  300W |    4842MiB /  49140MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A            1048      C   ...local/lib/ollama/llama-server       4832MiB |
++-----------------------------------------------------------------------------------------+
+
+Python 3.12.3
+ollama ollama version is 0.40.8
+
+NAME                    ID              SIZE      MODIFIED      
+qwen2.5:32b-instruct    9f13ba1299af    19 GB     2 minutes ago    
+qwen2.5:7b-instruct     845dbda0ea48    4.7 GB    3 minutes ago    
+llama-guard3:1b         494147e06bf9    1.6 GB    3 minutes ago    
+llama3.1:8b             46e0c10c039e    4.9 GB    3 minutes ago    
+
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-22T06:36:56.151058
