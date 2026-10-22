@@ -1,0 +1,22 @@
+{
+  "_comment": "Fixed for the whole midterm experiment. Read by app/settings.py. Generation options are the same as in Assignment 2.",
+  "bot_model": "qwen2.5:3b-instruct",
+  "guard_model": "llama-guard3:1b",
+  "judge_model": "qwen2.5:7b-instruct",
+  "bot_options": {
+    "temperature": 0.7,
+    "top_k": 20,
+    "num_predict": 256
+  },
+  "guard_options": {
+    "temperature": 0,
+    "num_predict": 20
+  },
+  "judge_options": {
+    "temperature": 0,
+    "num_predict": 200,
+    "seed": 42
+  },
+  "max_history_messages": 10,
+  "max_message_chars": 12000
+}

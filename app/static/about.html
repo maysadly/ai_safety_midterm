@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About - Pixelkiln</title>
+  <link rel="stylesheet" href="/static/css/site.css">
+  <script src="/static/js/chat-widget.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="/"><span class="logo-mark" aria-hidden="true"></span>Pixelkiln</a>
+      <nav class="nav" aria-label="Main">
+        <a href="/">Home</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/faq">FAQ</a>
+        <a href="/about" aria-current="page">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap prose">
+      <h1>About Pixelkiln</h1>
+      <p><strong>Pixelkiln does not exist.</strong> It is a fictional company made for a student project in the course AI Security and Risk Analysis (AISRA1301) at QAIRU. The name, prices, plans and email addresses are invented; the addresses use the reserved <code>.example</code> domain.</p>
+
+      <h2>Why the site exists</h2>
+      <p>The site is a realistic home for a customer support chatbot. The project tests how well that chatbot keeps its rules when people try to talk it out of them: revealing its instructions, leaking an internal code, promising refunds outside the policy, or doing unrelated work.</p>
+
+      <h2>How the assistant works</h2>
+      <p>Kiln, the assistant in the corner, is a small open-weight language model (Qwen2.5 3B Instruct) running locally with Ollama. It follows a fixed system prompt, and a second model, Llama Guard 3 1B, checks each answer before you see it. Nothing is sent to an external AI service.</p>
+      <p>Messages you send are written to a local log for the experiment. The log keeps a hash of your IP address, not the address itself.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span class="fictional">Fictional company — student demo project (QAIRU, AISRA1301)</span>
+      <span>Pixelkiln is not a real service. No real payments or accounts.</span>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Direct dependencies of the midterm prototype (Python 3.12). Exact versions of everything: requirements.lock
+fastapi==0.159.1
+uvicorn[standard]==0.54.0
+httpx==0.28.1
+python-dotenv==1.2.4
+PyYAML==6.0.3
+matplotlib==3.11.2
+pytest==9.1.1
+playwright==1.64.0
