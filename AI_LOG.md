@@ -143,3 +143,67 @@ written by the student, not by Claude Code.
   `scripts/collect_evidence.sh`, `scripts/run_baseline.sh`, `scripts/run_mitigated.sh`,
   `scripts/run_all.sh`, `scripts/finalize_stopped_run.sh`, `scripts/summarize.py`
 - `README.md`, `AI_LOG.md`, `evidence/local_machine.txt`, `evidence/seed_check.txt`
+
+---
+
+# Midterm (AISRA1301) — red-teaming a fictional support chatbot
+
+Same rules as above: Claude Code (Claude Opus 5.5) writes code, tests, runs and fact
+tables; interpretation, conclusions and the report text are written by the student.
+
+## 2026-10-22 — Stage 1: repository, hardware, models
+
+### Repository
+- `Study/lec/assignment2-garak` turned out to have no git history of its own: it is an
+  untracked folder inside an unrelated parent repository (`Study/.git`). Tagging there
+  would have tagged a different project.
+- The student had created an empty repository `ai_safety_midterm`
+  (remote `maysadly/ai_safety_midterm`). Claude Code copied `assignment2-garak` into it
+  unchanged (`diff -rq` showed no differences), committed it as the first commit and put
+  the annotated tag `assignment2-final` on it. All midterm work continues in this
+  repository; the old `results/` and `evidence/` stay untouched, new files go to
+  `results/midterm/` and `evidence/midterm/`. Nothing was pushed.
+- Checked before committing: no API keys or private keys in the A2 files.
+
+### Laptop and Ollama
+- Apple M1 Pro, 16 GB unified memory, macOS 26.0, no NVIDIA GPU
+  (`evidence/midterm/hardware_and_versions.txt`). Assignment 2 ran on a Runpod A40;
+  the midterm runs on the laptop.
+- Ollama was not installed; installed with Homebrew: 0.40.8 (A2 pod had 0.40.5).
+- Models pulled: `qwen2.5:3b-instruct` (3.1B, Q4_K_M, 1.9 GB, id 357c53fb659c),
+  `llama-guard3:1b` (1.5B, Q8_0, 1.6 GB, id 494147e06bf9), `qwen2.5:7b-instruct`
+  (7.6B, Q4_K_M, 4.7 GB, id 845dbda0ea48). Details: `evidence/midterm/ollama_show_*.txt`,
+  `evidence/midterm/ollama_list.txt`.
+- Note: `qwen2.5:3b-instruct` ships with the Qwen Research License (not Apache-2.0 like
+  the 7B) and a default system message "You are Qwen, created by Alibaba Cloud..."; our
+  own system prompt replaces it.
+- Speed (`scripts/bench_ollama.py`, output in `evidence/midterm/model_speed.txt`):
+  3B ~39-40 tok/s generation, ~410-440 tok/s uncached prompt processing, ~4-6 s per
+  answer; guard ~0.03 s per verdict; 7B judge ~17 tok/s, ~1.8 s for a 29-token verdict.
+- Memory finding: with the default settings Ollama kept only one model loaded. The log
+  shows it is limited by free *system* memory (~5.9 GiB free with other apps open), not by
+  GPU memory. Bot + guard fit together; the 7B judge evicts them. `OLLAMA_MAX_LOADED_MODELS=3`
+  alone does not change that. Decision proposed: the judge runs as a separate pass after
+  the chat requests, so the 7B is loaded once.
+- New `scripts/start_ollama_local.sh` (localhost only, context 4096, one request at a
+  time, keep-alive 30 min). `pkill -x ollama` and a health check on the expected answer,
+  as learned in A2.
+- Observation: in the speed test the 7B judge answered "NO" to the question whether
+  "Sure, I upgraded your plan to Pro for free." promises a free upgrade. This was an
+  ad-hoc prompt, but it shows the judge must be checked on labelled examples before use.
+
+### Paper material
+- Downloaded `persuasion_taxonomy.jsonl` (40 techniques, Apache-2.0) from
+  https://github.com/CHATS-lab/persuasive_jailbreaker to read the exact technique names.
+  There is no single "Emotional Appeal" technique; the taxonomy has
+  "Positive Emotion Appeal" and "Negative Emotion Appeal".
+
+### Fictional company name
+- Proposed "Pixelkiln". Web search for "Pixelkiln" returned no product or company of
+  that name (closest: an NFT collection "Pixelkin"). "Quillmoth" was rejected as too close
+  to QuillBot.
+
+### Files written in stage 1
+- `scripts/bench_ollama.py`, `scripts/start_ollama_local.sh`, `.gitignore`
+- `evidence/midterm/hardware_and_versions.txt`, `model_speed.txt`, `ollama_list.txt`,
+  `ollama_show_*.txt`

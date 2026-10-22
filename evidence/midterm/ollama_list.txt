@@ -1,0 +1,4 @@
+NAME                   ID              SIZE      MODIFIED      
+qwen2.5:7b-instruct    845dbda0ea48    4.7 GB    9 seconds ago    
+llama-guard3:1b        494147e06bf9    1.6 GB    2 minutes ago    
+qwen2.5:3b-instruct    357c53fb659c    1.9 GB    3 minutes ago    

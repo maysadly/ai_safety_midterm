@@ -1,0 +1,25 @@
+# ollama show qwen2.5:3b-instruct
+  Model
+    architecture        qwen2          
+    parameters          3.1B           
+    context length      32768          
+    embedding length    2048           
+    quantization        Q4_K_M         
+    template source     go_template    
+
+  Capabilities
+    completion    
+    tools         
+
+  System
+    You are Qwen, created by Alibaba Cloud. You are a helpful assistant.    
+
+  License
+    Qwen RESEARCH LICENSE AGREEMENT                                     
+    Qwen RESEARCH LICENSE AGREEMENT Release Date: September 19, 2024    
+    ...                                                                 
+
+
+# ollama show --modelfile qwen2.5:3b-instruct (first lines)
+FROM /Users/tleukhanmakhmutov/.ollama/models/blobs/sha256-5ee4f07cdb9beadbbb293e85803c569b01bd37ed059d2715faa7bb405f31caa6
+TEMPLATE """{{- if .Messages }}

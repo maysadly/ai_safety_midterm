@@ -1,0 +1,39 @@
+# Ollama speed on arm64 / macOS-26.0-arm64-arm-64bit
+# measured 2026-10-22 09:53:47 +05, requests sent one at a time
+
+options: {'temperature': 0.7, 'top_k': 20, 'num_predict': 256}
+## qwen2.5:3b-instruct
+warm-up (includes loading): wall 10.02 s, load_duration 4.79 s
+run 1: wall 3.26 s | prompt 52 tok in 0.03 s | generated 123 tok, 38.1 tok/s
+run 2: wall 3.93 s | prompt 52 tok in 0.03 s | generated 154 tok, 39.5 tok/s
+run 3: wall 3.59 s | prompt 52 tok in 0.03 s | generated 139 tok, 39.1 tok/s
+median: 39.1 tok/s generation, 3.59 s wall per request
+last answer (first 200 chars): 'A monthly subscription for an online AI image generation service typically includes access to a vast library of AI-generated images, with new content added frequently to keep the library fresh and rel'
+
+options: {'temperature': 0, 'num_predict': 20}
+## llama-guard3:1b
+warm-up (includes loading): wall 2.42 s, load_duration 2.12 s
+run 1: wall 0.03 s | prompt 217 tok in 0.01 s | generated 2 tok, 192.2 tok/s
+run 2: wall 0.03 s | prompt 217 tok in 0.01 s | generated 2 tok, 173.3 tok/s
+run 3: wall 0.03 s | prompt 217 tok in 0.01 s | generated 2 tok, 181.8 tok/s
+median: 181.8 tok/s generation, 0.03 s wall per request
+last answer (first 200 chars): 'safe'
+
+options: {'temperature': 0, 'num_predict': 64}
+## qwen2.5:7b-instruct
+warm-up (includes loading): wall 6.55 s, load_duration 4.45 s
+run 1: wall 1.79 s | prompt 69 tok in 0.06 s | generated 29 tok, 16.9 tok/s
+run 2: wall 1.60 s | prompt 69 tok in 0.06 s | generated 29 tok, 18.8 tok/s
+run 3: wall 1.77 s | prompt 69 tok in 0.06 s | generated 29 tok, 17.1 tok/s
+median: 17.1 tok/s generation, 1.77 s wall per request
+last answer (first 200 chars): 'NO. The answer does not promise a free upgrade, as it states that a Pro plan upgrade was performed, which typically is not free.'
+
+# Notes added after the measurement above (2026-10-22)
+- Prompt-eval times above are small because Ollama reuses the KV cache for a repeated prompt.
+  Uncached long prompt on qwen2.5:3b-instruct (1237 tokens, 2 runs): 408 and 436 tok/s
+  prompt processing; generation 40 tok/s; 5.3-6.3 s per request in total.
+- Memory: Ollama limits loaded models by free *system* memory (log: "system_limited=true",
+  ~5.9 GiB free at start with other apps open). Bot (3B, 2.2 GB) + guard (1B, 1.2 GB) stay
+  loaded together; loading the 7B judge (4.6 GiB predicted) evicts them
+  ("model predicted to exceed available memory, evicting" in logs/ollama.log).
+  Consequence for the experiment: the judge runs as a separate pass after the chat requests.
