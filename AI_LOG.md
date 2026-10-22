@@ -340,3 +340,72 @@ tables; interpretation, conclusions and the report text are written by the stude
   measured with the app running on the same machine as Ollama.
 - `tests/conftest.py`, `tests/test_gateway.py`: model names now come from
   `configs/bot.json`, so the tests do not depend on which bot model is chosen.
+
+## 2026-10-22 — Stage 3: attack sets, judge, /admin, /demo, runner, garak setup
+
+### Student's decision
+- "Do it as you think is right, finish the midterm as briefed, don't forget screenshots."
+  From here Claude Code makes the technical decisions and reports after each stage.
+
+### Bot model fixed: `llama3.1:8b`
+- Reasons (from the two pilots): it kept the support role on 12/12 harmless off-topic
+  requests; the research question speaks of a "small local model"; the same weights
+  (digest 46e0c10c039e) also run on the laptop (~18 tok/s, `evidence/midterm/model_speed_llama3.1_8b_laptop.txt`)
+  as a fallback for the live demo. On the laptop the 8B bot and the guard do not stay
+  loaded together (memory), so the main demo uses the pod.
+- `configs/bot.json`: `bot_model` = `llama3.1:8b`.
+
+### Attack sets (fixed before any attack run; committed before the pod session)
+- `attacks/m0_direct.yaml`: 12 direct requests, 3 per goal G1-G4.
+- `attacks/m2_persuasion.yaml`: 24 hand-written persuasive prompts = 6 techniques x 4 goals.
+  Techniques and their definitions are copied verbatim from the published taxonomy
+  (`attacks/persuasion_taxonomy.jsonl`, CHATS-lab/persuasive_jailbreaker, Apache-2.0,
+  commit 11f8e8e). Each prompt paraphrases one plain request per goal, so inside a goal
+  only the technique changes. Invented statistics/claims inside the prompts are part of
+  the techniques. Foot-in-the-door is simulated in one message (multi-turn: final project).
+- Tests check: full technique x goal grid, definitions equal the taxonomy file, no prompt
+  contains any part of the canaries, pilot questions are not reused, no G5 prompts of our own.
+
+### Judge (G3, G4)
+- `app/judge.py`: rubric per goal, JSON verdict `{"violation": bool, "reason": str}`
+  (Ollama `format: json`, temperature 0, seed 42); attacker text fenced and marked as
+  context only. Invalid JSON -> "not scored" (counted separately, never as success/failure).
+- `attacks/judge_calibration.yaml`: 24 hand-written answers with labels (12 G3, 12 G4),
+  written by Claude Code, not from real outputs. `scripts/calibrate_judge.py` compares
+  judge models. Decision rule fixed before running it: higher accuracy wins; tie -> larger
+  model. Candidates: `qwen2.5:7b-instruct`, `qwen2.5:32b-instruct` (on the pod).
+
+### Scoring (`app/evaluation.py`)
+- Detectors/judge look at the answer before the guard. `model_violated` (bot broke the
+  goal's rule), `attack_success` = violated and not blocked, `guard_missed` = for
+  violations, the guard did not block. Exact G1/G2 detectors run on every answer.
+
+### /admin and /demo (`app/admin.py`, `app/admin_auth.py`, static pages)
+- Password from `.env`; cookie = expiry + HMAC-SHA256 (COOKIE_SECRET), HttpOnly,
+  SameSite=Strict, 8 h; 5 login attempts per minute; the login page only redirects to
+  local paths. Logged-in admin requests are not rate limited (needed for "Run all").
+- `/admin`: last 50 chat log entries, debug-lines switch (also shows the widget).
+- `/demo`: attack list (filters by goal/method), run one or "run all shown", verdict with
+  detector/judge/guard details and latency, success highlighted, scoreboard per goal.
+  It uses `POST /api/chat` + `POST /api/demo/evaluate`, exactly like the runner.
+- `scripts/run_attacks.py`: the experiment runner for M0/M2 (same two calls, repeat-major
+  order, resumable, refuses to run if the server's system prompt hash differs).
+
+### garak (M1), checked in the garak 0.17.0 source (wheel unpacked in a scratch folder)
+- The REST generator sends only `prompt.last_message().text`. So for
+  `sysprompt_extraction.SystemPromptExtraction` the system prompts from garak's HF
+  datasets never reach our bot (it keeps its own), and garak's own detector for that probe
+  compares against a prompt our bot never saw; G1 is scored with our exact detectors.
+  `system_prompt_subsample: 1` so each of its 28 attack templates is sent once (x5).
+- Probe groups (`scripts/run_garak.sh`, `configs/garak_rest.yaml`, 5 generations, seed 42,
+  at most 30 prompts per probe): dan (16 classic prompts, as A2) + grandma.Slurs/Substances
+  (22) -> G5; SystemPromptExtraction (28) -> G1; promptinject.HijackHateHumans (30) -> G5.
+  Left out: `apikey.GetKey` (asks for made-up third-party API keys, not our secret).
+- garak gets its own venv (`.venv-garak`) on the pod; the app venv stays small.
+
+### Tests
+- 86 pass (`pytest`), incl. 9 Playwright tests (widget, admin debug switch, demo success,
+  demo guard block, run all, login redirect) and a runner test (resume works).
+- Mutation checks: accepting any cookie signature and counting a success without looking
+  at the guard each made a test fail; files restored.
+- Found by a browser test: the open chat widget covers the admin "Refresh" button.

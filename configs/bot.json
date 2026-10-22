@@ -1,6 +1,6 @@
 {
   "_comment": "Fixed for the whole midterm experiment. Read by app/settings.py. Generation options are the same as in Assignment 2.",
-  "bot_model": "qwen2.5:3b-instruct",
+  "bot_model": "llama3.1:8b",
   "guard_model": "llama-guard3:1b",
   "judge_model": "qwen2.5:7b-instruct",
   "bot_options": {

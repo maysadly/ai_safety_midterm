@@ -1,4 +1,4 @@
-"""FastAPI app: the Pixelkiln website, the chat API, /demo and /admin.
+"""FastAPI app: the Pixelkiln website and the chat API. /admin and /demo: app/admin.py.
 
 Run (from the repository root):
     .venv/bin/uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000
@@ -15,6 +15,8 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from app.admin import add_admin_routes, is_admin
+from app.attacks import load_attacks
 from app.gateway import BotUnavailable, Gateway
 from app.jsonl_log import JsonlLog
 from app.ollama_client import OllamaClient
@@ -98,7 +100,9 @@ def create_app(settings: Settings | None = None, llm=None) -> FastAPI:
             raise HTTPException(413, "Message is too long.")
 
         ip_hash = hash_ip(request.client.host if request.client else "", settings.ip_hash_salt)
-        if settings.rate_limit_enabled and not limiter.allow(ip_hash):
+        # A logged-in admin (the /demo "run all" button) is not rate limited.
+        limited = settings.rate_limit_enabled and not is_admin(request)
+        if limited and not limiter.allow(ip_hash):
             chat_log.write(
                 {
                     "time": datetime.now(timezone.utc).isoformat(),
@@ -134,4 +138,5 @@ def create_app(settings: Settings | None = None, llm=None) -> FastAPI:
             }
         return response
 
+    add_admin_routes(app, STATIC, chat_log, load_attacks(), llm, hash_ip)
     return app

@@ -60,6 +60,11 @@ def load_settings(env_file: Path | None = ROOT / ".env") -> Settings:
         )
 
     system_prompt = (CONFIGS / "system_prompt.txt").read_text(encoding="utf-8").strip()
+    bot = json.loads((CONFIGS / "bot.json").read_text())
+    # Only for the laptop fallback demo, where the experiment's judge does not fit in memory.
+    # Every evaluation record stores the judge model it used.
+    if os.environ.get("JUDGE_MODEL"):
+        bot["judge_model"] = os.environ["JUDGE_MODEL"]
     return Settings(
         ollama_url=os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434"),
         admin_password=admin_password,
@@ -70,7 +75,7 @@ def load_settings(env_file: Path | None = ROOT / ".env") -> Settings:
         debug_lines=_flag("DEBUG_LINES", "false"),
         chat_log_path=_path("CHAT_LOG_PATH", "logs/chat.jsonl"),
         eval_log_path=_path("EVAL_LOG_PATH", "logs/evaluations.jsonl"),
-        bot=json.loads((CONFIGS / "bot.json").read_text()),
+        bot=bot,
         detectors=json.loads((CONFIGS / "detectors.json").read_text()),
         system_prompt=system_prompt,
         system_prompt_sha256=hashlib.sha256(system_prompt.encode("utf-8")).hexdigest(),

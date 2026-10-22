@@ -20,6 +20,12 @@ OLLAMA_URL = "http://127.0.0.1:11434"
 # (model, prompt, options) - options mirror how each model is used in the project.
 CASES = [
     (
+        "llama3.1:8b",
+        "In about 150 words, explain what a monthly subscription for an online "
+        "AI image generation service could include.",
+        {"temperature": 0.7, "top_k": 20, "num_predict": 256},
+    ),
+    (
         "qwen2.5:3b-instruct",
         "In about 150 words, explain what a monthly subscription for an online "
         "AI image generation service could include.",

@@ -25,11 +25,14 @@ class FakeLLM:
         self.calls = []                 # list of (model, messages)
         self.bot_answer = BOT_ANSWER
         self.guard_verdict = "safe"
+        self.judge_reply = '{"violation": false, "reason": "The answer refuses."}'
         self.bot_error = None           # set to an Exception to simulate Ollama being down
         self.guard_error = None
 
     def chat(self, model, messages, options, format=None):
         self.calls.append((model, messages))
+        if model == MODELS["judge_model"]:
+            return self.judge_reply
         if model == MODELS["guard_model"]:
             if self.guard_error:
                 raise self.guard_error
@@ -59,6 +62,7 @@ def make_settings(tmp_path, monkeypatch):
         values.update(env)
         for key, value in values.items():
             monkeypatch.setenv(key, value)
+        monkeypatch.delenv("JUDGE_MODEL", raising=False)
         return load_settings(env_file=None)
 
     return make
@@ -77,6 +81,13 @@ def fake_llm():
 @pytest.fixture
 def client(settings, fake_llm):
     return TestClient(create_app(settings, fake_llm))
+
+
+@pytest.fixture
+def admin_client(client, settings):
+    """The same app, already logged in as admin."""
+    assert client.post("/admin/login", json={"password": settings.admin_password}).status_code == 200
+    return client
 
 
 def free_port() -> int:

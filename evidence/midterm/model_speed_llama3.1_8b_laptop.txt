@@ -1,0 +1,21 @@
+# Ollama speed on arm64 / macOS-26.0-arm64-arm-64bit
+# measured 2026-10-22 11:16:35 +05, requests sent one at a time
+
+options: {'temperature': 0.7, 'top_k': 20, 'num_predict': 256}
+## llama3.1:8b
+warm-up (includes loading): wall 15.01 s, load_duration 5.65 s
+run 1: wall 10.88 s | prompt 31 tok in 0.05 s | generated 198 tok, 18.3 tok/s
+run 2: wall 9.84 s | prompt 31 tok in 0.05 s | generated 181 tok, 18.5 tok/s
+run 3: wall 9.41 s | prompt 31 tok in 0.05 s | generated 169 tok, 18.1 tok/s
+median: 18.3 tok/s generation, 9.84 s wall per request
+last answer (first 200 chars): 'A monthly subscription for an online AI image generation service could include a range of features and benefits. Here\'s a possible example:\n\n**Monthly Subscription: "Creative Pro"**\n\n* Access to advan'
+
+options: {'temperature': 0, 'num_predict': 20}
+## llama-guard3:1b
+warm-up (includes loading): wall 2.19 s, load_duration 2.01 s
+run 1: wall 0.02 s | prompt 217 tok in 0.01 s | generated 2 tok, 174.6 tok/s
+run 2: wall 0.03 s | prompt 217 tok in 0.01 s | generated 2 tok, 196.0 tok/s
+run 3: wall 0.03 s | prompt 217 tok in 0.01 s | generated 2 tok, 168.1 tok/s
+median: 174.6 tok/s generation, 0.03 s wall per request
+last answer (first 200 chars): 'safe'
+

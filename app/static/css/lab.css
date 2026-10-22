@@ -1,0 +1,93 @@
+/* Staff pages: login, admin panel, attack lab. Same palette as site.css, denser layout.
+   Colours of verdicts: oxblood = attack succeeded, cobalt = blocked by guard, celadon = rule kept. */
+
+.wrap-wide { max-width: 1320px; }
+.lab main { padding-top: 36px; }
+.lab h1 { font-size: 2.4rem; }
+.lab-tag { font-weight: 600; color: var(--cobalt-soft); }
+.hint { color: var(--cobalt-soft); font-size: 0.92rem; }
+.link-button { border: 0; background: none; font: inherit; color: var(--cobalt); cursor: pointer; padding: 4px 0; }
+.link-button:hover { text-decoration: underline; }
+code { font-family: ui-monospace, Menlo, monospace; font-size: 0.88em; background: #e6ece8; padding: 1px 5px; border-radius: 3px; }
+
+/* login */
+.login-box { max-width: 460px; }
+.login-box form { display: grid; gap: 10px; margin-top: 20px; }
+.login-box input { padding: 10px 12px; font: inherit; border: 1px solid var(--cobalt-soft); border-radius: var(--radius-small); }
+.form-error { color: var(--oxblood); font-weight: 600; min-height: 1.4em; margin: 0; }
+
+/* admin */
+.panel { background: var(--white); border-top: 3px solid var(--cobalt); padding: 20px 24px; margin-bottom: 28px; }
+.panel h2 { font-size: 1.4rem; margin: 0 0 8px; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.switch { display: flex; gap: 10px; align-items: center; cursor: pointer; }
+.switch input { width: 20px; height: 20px; accent-color: var(--oxblood); }
+.log-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.log-table th, .log-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--ash); vertical-align: top; }
+.log-table th { background: var(--porcelain); position: sticky; top: 0; }
+.log-table .cell-text { max-width: 320px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.row-blocked td { background: #eef0f8; }
+
+/* attack lab */
+.lab-intro p { max-width: 90ch; color: var(--cobalt-soft); }
+.scoreboard { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin: 18px 0 24px; }
+.score-actions { display: flex; align-items: center; gap: 14px; }
+.score-actions .button { cursor: pointer; font: 600 1rem var(--sans); }
+.score-actions .button:disabled { opacity: 0.55; cursor: wait; }
+.score-list { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; margin: 0; padding: 0; }
+.score { display: grid; padding: 8px 14px; background: var(--white); border-left: 4px solid var(--celadon-deep); min-width: 190px; }
+.score-hit { border-left-color: var(--oxblood); }
+.score-goal { font-size: 0.8rem; color: var(--cobalt-soft); }
+.score-value { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; }
+.score-hit .score-value { color: var(--oxblood); }
+.score-sub { font-size: 0.78rem; color: var(--cobalt-soft); }
+
+.lab-grid { display: grid; grid-template-columns: minmax(320px, 0.9fr) 1.3fr; gap: 28px; align-items: start; }
+.filters { display: flex; gap: 14px; margin-bottom: 12px; font-size: 0.9rem; }
+.filters select { margin-left: 6px; padding: 4px 6px; font: inherit; }
+.attack-list ul { list-style: none; margin: 0; padding: 0; max-height: 72vh; overflow-y: auto; border-top: 3px solid var(--cobalt); }
+.attack-item { border-bottom: 1px solid var(--ash); background: var(--white); }
+.attack-button { display: grid; gap: 4px; width: 100%; text-align: left; padding: 10px 12px; border: 0; border-left: 5px solid transparent; background: none; font: inherit; color: inherit; cursor: pointer; }
+.attack-button:hover { background: #f1f5f3; }
+.attack-head { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 0.85rem; }
+.attack-prompt { font-size: 0.82rem; color: var(--cobalt-soft); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.technique { font-style: italic; color: var(--cobalt-soft); }
+.chip { font-size: 0.72rem; font-weight: 600; padding: 1px 7px; border-radius: 999px; background: var(--ash); }
+.chip-G1 { background: #dfe4f5; }
+.chip-G2 { background: #f3dfe2; }
+.chip-G3 { background: #f6e8cf; }
+.chip-G4 { background: #d9eadf; }
+.chip-G5 { background: #e3dcea; }
+.status { margin-left: auto; font-weight: 700; font-size: 0.75rem; }
+.is-success .attack-button { border-left-color: var(--oxblood); background: #fbf0f1; }
+.is-success .status { color: var(--oxblood); }
+.is-blocked .attack-button { border-left-color: var(--cobalt); }
+.is-blocked .status { color: var(--cobalt); }
+.is-failed .attack-button { border-left-color: var(--celadon-deep); }
+.is-failed .status { color: var(--celadon-deep); }
+
+.result { background: var(--white); padding: 20px 24px; border-top: 3px solid var(--cobalt); min-height: 300px; }
+.result h2 { font-size: 1.5rem; margin-bottom: 10px; }
+.result-label { margin: 14px 0 4px; font-size: 0.8rem; font-weight: 600; color: var(--cobalt-soft); }
+.prompt-box, .answer-box { margin: 0; padding: 10px 12px; white-space: pre-wrap; overflow-wrap: anywhere; font: 0.9rem/1.5 var(--sans); border-radius: var(--radius-small); }
+.prompt-box { background: var(--porcelain); border: 1px solid var(--ash); }
+.answer-box { background: #f7f9fc; border: 1px solid var(--ash); max-height: 320px; overflow-y: auto; }
+.pending { color: var(--cobalt-soft); }
+.pending::after { content: ""; animation: dots 1.2s steps(4) infinite; }
+.verdict { margin: 16px 0 10px; padding: 12px 14px; border-left: 6px solid; font-size: 1rem; }
+.verdict-success { border-color: var(--oxblood); background: #fbecee; color: var(--oxblood); }
+.verdict-blocked { border-color: var(--cobalt); background: #e9ecf7; }
+.verdict-held { border-color: var(--celadon-deep); background: #e9f2ec; }
+.verdict-neutral { border-color: var(--ash); background: var(--porcelain); }
+.details { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; font-size: 0.88rem; margin: 0; }
+.details dt { font-weight: 600; color: var(--cobalt-soft); }
+.details dd { margin: 0; overflow-wrap: anywhere; }
+.hidden-answer { margin-top: 14px; }
+.hidden-answer summary { cursor: pointer; font-weight: 600; }
+
+@media (max-width: 900px) {
+  .lab-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pending::after { animation: none; content: "..."; }
+}
